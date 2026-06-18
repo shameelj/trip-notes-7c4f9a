@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="SFO">
 <meta name="theme-color" content="#0B1218">
 <title>SFO — Jul 17–19</title>
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" type="image/png" href="icon.png">
 <style>
   @font-face{
     font-family:"Marcellus";
@@ -72,6 +74,7 @@
   header .eyebrow, header h1, header .sub{position:relative;z-index:1;}
   body:not([data-tab="now"]) .hscene{opacity:0;transition:opacity .4s ease;}
   body[data-tab="now"] #bridge{opacity:0;}
+  #scrublab{position:absolute;top:calc(env(safe-area-inset-top,0px) + 24px);right:18px;z-index:2;font:700 11px/1 ui-monospace,"SF Mono",Menlo,monospace;color:#fff;opacity:0;transition:opacity .2s ease;letter-spacing:.08em;text-shadow:0 1px 8px rgba(0,0,0,.6);pointer-events:none;}
   .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);margin-bottom:4px;}
   h1{font-family:"Futura","Century Gothic",system-ui,sans-serif;font-size:40px;line-height:1;font-weight:500;letter-spacing:.06em;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.42);}
   .sub{margin-top:6px;font-size:13.5px;color:var(--soft);}
@@ -86,6 +89,7 @@
 
   .wx{font:600 11.5px/1.6 ui-monospace, "SF Mono", Menlo, monospace;color:var(--soft);letter-spacing:.04em;margin:-4px 0 14px;}
   .wx b{color:var(--fog);font-weight:700;}
+  .placeline{font-family:"Marcellus", Georgia, serif;font-size:15px;line-height:1.4;color:var(--brass);margin:-2px 0 13px;}
 
   .nudge{
     border-left:3px solid var(--brass);
@@ -103,6 +107,13 @@
   }
   .boatcard .lbl{display:block;font-size:10px;letter-spacing:.24em;color:#5B6B76;margin-bottom:2px;}
   .boatcard .hot{color:#C8452A;font-weight:800;}
+  .ferrycard{background:var(--card);border:1px solid var(--hair);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;}
+  .ferrycard .fc-lbl{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin-bottom:8px;}
+  .ferrycard .fc-times{font:700 15px/1.4 ui-monospace,"SF Mono",Menlo,monospace;color:var(--soft);letter-spacing:.06em;}
+  .ferrycard .fc-times b{color:var(--glow);}
+  .ferrycard .fc-note{font-size:13.5px;line-height:1.5;color:var(--soft);margin-top:9px;}
+  .ferrycard .fc-note b{color:var(--fog);font-weight:700;}
+  .ferrycard .fc-fare{font-size:12.5px;line-height:1.5;color:var(--soft);margin-top:9px;padding-top:9px;border-top:1px solid var(--hair);}
   .tear{border-top:2px dashed #9FB0BB;margin:9px -14px;position:relative;}
   .tear::before,.tear::after{
     content:"";position:absolute;top:-7px;width:13px;height:13px;border-radius:50%;
@@ -141,6 +152,7 @@
   .name{font-weight:700;font-size:16.5px;color:var(--fog);}
   .name .star{color:var(--brass);}
   .note{margin-top:3px;font-size:13.5px;line-height:1.45;color:var(--soft);}
+  .dist{margin-top:7px;font:700 11px/1 ui-monospace,"SF Mono",Menlo,monospace;color:var(--brass);letter-spacing:.04em;}
   .acts{margin-top:9px;display:flex;gap:8px;flex-wrap:wrap;}
   .act{
     display:inline-flex;align-items:center;justify-content:center;
@@ -150,6 +162,9 @@
   }
   .act:active{background:var(--fog);color:var(--night);}
   .act:focus-visible{outline:3px solid var(--glow);outline-offset:2px;}
+  .pcbtn{margin-top:12px;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid var(--brass);background:transparent;color:var(--brass);font:600 13px/1 -apple-system,sans-serif;cursor:pointer;}
+  .pcbtn:active{background:var(--brass);color:var(--night);}
+  .pcbtn:focus-visible{outline:3px solid var(--glow);outline-offset:2px;}
 
   .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
   .chip{
@@ -233,6 +248,9 @@
   #sky{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-top) 44%,var(--sky-mid) 78%,var(--sky-horizon) 100%);}
   #sunglow{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:160%;height:48%;background:radial-gradient(50% 82% at 50% 100%, var(--sky-horizon) 0%, transparent 70%);opacity:.85;}
   #bridge{position:absolute;left:0;bottom:0;width:100%;height:auto;display:block;}
+  #stars{position:absolute;left:0;right:0;top:0;height:42%;opacity:0;transition:opacity 2.5s ease;}
+  body[data-night] #stars{opacity:1;}
+  #stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#E8ECEB;box-shadow:0 0 3px rgba(232,236,235,.8);}
   /* Golden Hour overdrive */
   @supports (animation-timeline: view()){
     .line .stop{animation:stopIn linear both;animation-timeline:view();animation-range:entry 0% entry 36%;}
@@ -270,6 +288,7 @@
     <g fill="#070B10"><rect x="93" y="24" width="6" height="98"/><rect x="105" y="24" width="6" height="98"/><rect x="91" y="38" width="22" height="5"/><rect x="91" y="60" width="22" height="5"/><rect x="283" y="24" width="6" height="98"/><rect x="295" y="24" width="6" height="98"/><rect x="281" y="38" width="22" height="5"/><rect x="281" y="60" width="22" height="5"/></g>
     <g stroke="#070B10" stroke-width="1.4"><line x1="55" y1="80" x2="55" y2="122"/><line x1="130" y1="60" x2="130" y2="122"/><line x1="160" y1="78" x2="160" y2="122"/><line x1="195" y1="88" x2="195" y2="122"/><line x1="230" y1="78" x2="230" y2="122"/><line x1="260" y1="60" x2="260" y2="122"/><line x1="335" y1="80" x2="335" y2="122"/></g>
   </svg>
+  <div id="stars" aria-hidden="true"><i style="left:12%;top:9%"></i><i style="left:22%;top:18%"></i><i style="left:34%;top:7%"></i><i style="left:46%;top:15%"></i><i style="left:58%;top:6%"></i><i style="left:67%;top:19%"></i><i style="left:78%;top:11%"></i><i style="left:88%;top:17%"></i><i style="left:17%;top:28%"></i><i style="left:41%;top:26%"></i><i style="left:72%;top:30%"></i><i style="left:90%;top:27%"></i></div>
 </div>
 <div class="wrap">
 
@@ -287,12 +306,14 @@
       </svg>
       <div class="hveil"></div>
     </div>
+    <div id="scrublab" aria-hidden="true"></div>
     <div class="eyebrow">San Francisco · July 17–19, 2026</div>
     <h1>SFO</h1>
     <div class="sub"><b>Fairmont, Nob Hill</b> · no car · boat there, bridge back</div>
   </header>
 
   <section class="panel on" id="p-now" role="tabpanel" aria-labelledby="t-now">
+    <p class="placeline" id="placeline" aria-live="polite"></p>
     <p class="wx" id="wx" hidden></p>
     <div class="chips" id="chips"></div>
     <div id="nowblock"></div>
@@ -310,6 +331,7 @@
         <div class="field"><label for="k-dinner">Friday dinner (booked where / time / conf)</label><input id="k-dinner" data-k="dinner" autocomplete="off" placeholder="e.g. Niku 6:00 — counter for 1"></div>
         <div class="field"><label for="k-notes">Anything else</label><input id="k-notes" data-k="notes" autocomplete="off" placeholder="notes"></div>
         <p class="savenote">Edits save automatically when this runs inside Claude.</p>
+        <button class="pcbtn" id="pcbtn" type="button">Make a sunset postcard</button>
       </div>
     </details>
   </section>
@@ -324,21 +346,11 @@
   <section class="panel" id="p-sat" role="tabpanel" aria-labelledby="t-sat">
     <h2 class="daytitle">Saturday, July 18</h2>
     <div class="daysub"><span class="bigday">The big day</span> · starred brunch · North Beach · the boat · the event</div>
-    <div class="boatcard">
-      <span class="lbl">GG Ferry · SF → Sausalito · Sat</span>
-      12:35 &nbsp;·&nbsp; 2:15 &nbsp;·&nbsp; <span class="hot">4:00 ← yours</span> &nbsp;·&nbsp; 5:50
-      <div class="tear" aria-hidden="true"></div>
-      <span class="lbl">Last boat back</span>
-      6:55 — you're Ubering home over the bridge
-      <div class="boatroute" aria-hidden="true">
-        <span class="port sf">SF</span>
-        <div class="track"></div>
-        <svg class="boatferry" width="26" height="15" viewBox="0 0 26 15"><path d="M2 8h22l-3 6H5z" fill="#C8452A"/><rect x="8" y="2" width="11" height="6" rx="1" fill="#C8452A"/><rect x="10" y="3.6" width="2.6" height="2.6" fill="#E8ECEB"/><rect x="14.4" y="3.6" width="2.6" height="2.6" fill="#E8ECEB"/></svg>
-        <span class="port sa">Sausalito</span>
-      </div>
-      <div class="tear" aria-hidden="true"></div>
-      <span class="lbl">Fare · how to ride</span>
-      Tap Clipper (Apple Wallet) at the Gate B reader before boarding · SF&nbsp;→&nbsp;Sausalito ≈ $14.<br>No card yet? Wallet → + → Transit Card → Clipper → load $20+.
+    <div class="ferrycard">
+      <div class="fc-lbl">Golden Gate Ferry · SF → Sausalito</div>
+      <div class="fc-times">12:35 · 2:15 · <b>4:00</b> · 5:50</div>
+      <div class="fc-note">You're on the <b>4:00</b>. Last boat back is 6:55, but you're Ubering home over the bridge.</div>
+      <div class="fc-fare">Tap Clipper in Apple Wallet at the Gate B reader before boarding · SF→Sausalito ≈ $14. No card yet? Wallet → + → Transit Card → Clipper → load $20+.</div>
     </div>
     <div class="line" id="line-sat"></div>
     <p class="endline">— end of line —</p>
@@ -470,9 +482,10 @@
 </nav>
 
 <script>
-const maps = q => "https://maps.apple.com/?q=" + encodeURIComponent(q);
+const maps = q => "https://maps.apple.com/?daddr=" + encodeURIComponent(q);
 const uber = a => "https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff%5Bformatted_address%5D=" + encodeURIComponent(a);
 const U = (y,mo,d,h,mi) => Date.UTC(y,mo,d,h,mi);
+let _scrubbing = false, _here = null;
 
 /* ---- Golden Hour: living sky tied to the real SF clock ---- */
 const SKY=[[0,['#07090D','#0B121A','#10161F']],[5,['#090E15','#141826','#3A2C3A']],[7,['#0C1620','#1B2A36','#5A4A52']],[9,['#0C1822','#17262F','#2C3C46']],[13,['#0C1822','#16242F','#26323C']],[17,['#0E1620','#2A2630','#6E3F33']],[19.5,['#0E1420','#3A2A30','#B0492E']],[20.5,['#0C1018','#3E2A2C','#E0552F']],[21.5,['#0A0F16','#2A1E22','#7A3B2C']],[23,['#080B10','#10141C','#1A1620']],[24,['#07090D','#0B121A','#10161F']]];
@@ -480,16 +493,21 @@ const _hx=c=>[parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.sli
 const _mix=(a,b,t)=>{const A=_hx(a),B=_hx(b),f=v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0');return '#'+f(A[0]+(B[0]-A[0])*t)+f(A[1]+(B[1]-A[1])*t)+f(A[2]+(B[2]-A[2])*t);};
 const _reduceMo = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let _skySet=false;
+function setSkyForHour(h){
+  let i=0; while(i<SKY.length-1 && SKY[i+1][0]<=h) i++;
+  const a=SKY[i], b=SKY[Math.min(i+1,SKY.length-1)];
+  const t=b[0]>a[0]?(h-a[0])/(b[0]-a[0]):0;
+  const r=document.documentElement.style;
+  r.setProperty('--sky-top',_mix(a[1][0],b[1][0],t));
+  r.setProperty('--sky-mid',_mix(a[1][1],b[1][1],t));
+  r.setProperty('--sky-horizon',_mix(a[1][2],b[1][2],t));
+}
 function updateSky(){
   try{
+    if(_scrubbing) return;
     const d=new Date(sfNow()), h=d.getUTCHours()+d.getUTCMinutes()/60;
-    let i=0; while(i<SKY.length-1 && SKY[i+1][0]<=h) i++;
-    const a=SKY[i], b=SKY[Math.min(i+1,SKY.length-1)];
-    const t=b[0]>a[0]?(h-a[0])/(b[0]-a[0]):0;
-    const r=document.documentElement.style;
-    r.setProperty('--sky-top',_mix(a[1][0],b[1][0],t));
-    r.setProperty('--sky-mid',_mix(a[1][1],b[1][1],t));
-    r.setProperty('--sky-horizon',_mix(a[1][2],b[1][2],t));
+    document.body.toggleAttribute('data-night', h<6 || h>=20.4);
+    setSkyForHour(h);
     const fog=(_wx===45||_wx===48), cloud=(_wx===2||_wx===3);
     document.querySelectorAll('.hveil').forEach(v=>{v.style.opacity = fog?'1':(cloud?'.4':'0');});
     const skyEl=document.getElementById('sky'); if(skyEl) skyEl.style.filter = fog?'saturate(.6) brightness(.9)':'';
@@ -542,6 +560,7 @@ const NUDGES = [
   {a:U(2026,6,17,0,0),  b:U(2026,6,17,10,24), x:"Travel day. Carry-on check: the jacket, chargers, Clipper in Wallet."},
   {a:U(2026,6,18,7,0),  b:U(2026,6,18,11,15), x:"The big day. Phone to 100%, battery pack in pocket, cash for Trieste."},
   {a:U(2026,6,18,14,0), b:U(2026,6,18,16,0),  x:"Jacket — the deck is cold. Cable car from the front door at 3:25."},
+  {a:U(2026,6,18,16,0), b:U(2026,6,18,16,33), x:"Crossing now — Alcatraz to your left, the bridge to your right. Jacket on, glass up."},
   {a:U(2026,6,18,19,45),b:U(2026,6,18,20,30), x:"Sunset 8:30 — face the Gate, glass in hand."},
   {a:U(2026,6,18,20,30),b:U(2026,6,19,2,0),   x:"No boat needed — Uber home over the lit bridge, as planned."},
   {a:U(2026,6,19,6,30), b:U(2026,6,19,8,45),  x:"Wheels up at 11. Out the door by 8:40."}
@@ -608,7 +627,7 @@ function fmtDelta(ms){
 function actsFor(s){
   const acts = [];
   if (s.addr){
-    acts.push('<a class="act" target="_blank" rel="noopener" href="' + maps(s.addr) + '">Maps</a>');
+    acts.push('<a class="act" target="_blank" rel="noopener" href="' + maps(s.addr) + '">Directions</a>');
     acts.push('<a class="act" target="_blank" rel="noopener" href="' + uber(s.addr) + '">Uber</a>');
   }
   if (s.tel) acts.push('<a class="act" href="tel:' + s.tel + '">Call</a>');
@@ -622,6 +641,7 @@ function stopCard(s, labelOverride){
     '<span class="when' + ghost + '" style="background:var(--bridge);color:#fff;border:0;">' + (labelOverride || s.t) + '</span>' +
     '<div class="name">' + s.n.replace("★",'<span class="star">★</span>') + '</div>' +
     '<div class="note">' + s.note + '</div>' +
+    (distStr(s.n) ? '<div class="dist">' + distStr(s.n) + '</div>' : '') +
     (acts.length ? '<div class="acts">' + acts.join("") + '</div>' : '') +
   '</div></div>';
 }
@@ -631,16 +651,32 @@ function nudgeHtml(now){
     .map(n => '<div class="nudge">' + n.x + '</div>').join("");
 }
 
+function setPlaceLine(now){
+  try{
+    const d=new Date(now), h=d.getUTCHours()+d.getUTCMinutes()/60;
+    const el=document.getElementById("placeline"); if(!el) return;
+    let s;
+    if(_wx===45||_wx===48) s="Fog's rolling in over the Gate.";
+    else if(h<6.5) s="The city's asleep under the fog.";
+    else if(h<10.5) s="Morning light, the fog burning off.";
+    else if(h<15) s="Bright and breezy out on the bay.";
+    else if(h<18.5) s="The afternoon's tipping toward gold.";
+    else if(h<20.5) s="Golden hour over the water.";
+    else if(h<22) s="The bridge is lighting up.";
+    else s="Night fog, and the bridge aglow.";
+    el.textContent=s;
+  }catch(e){}
+}
 function renderNow(){
   try{
     updateSky();
     const now = sfNow();
+    setPlaceLine(now);
     document.getElementById("chips").innerHTML = COUNTS.map(c => {
       const ms = c.ts - now, d = fmtDelta(ms);
       const warm = (c.l.indexOf("Sunset") >= 0 && ms > 0 && ms < 3*3600000) ? " sunsetwarm" : "";
       return '<div class="chip' + (d ? "" : " done") + warm + '"><span class="cl">' + c.l + '</span><span class="cv">' + (d ? d : "✓") + '</span></div>';
-    }).join("") +
-    '<a class="chip" target="_blank" rel="noopener" href="https://www.flightaware.com/live/flight/AAL2565"><span class="cl">AA 2565</span><span class="cv">track ↗</span></a>';
+    }).join("");
 
     const sched = [].concat(DAYS.fri, DAYS.sat, DAYS.sun).filter(s => !s.skip).sort((a,b) => a.ts - b.ts);
     const host = document.getElementById("nowblock");
@@ -656,8 +692,9 @@ function renderNow(){
       return;
     }
     if (now >= last.ts){
-      host.innerHTML = '<p class="upnext-label">Trip complete</p>' +
-        '<div class="card"><div class="name">Wheels up ✓</div><div class="note">Boat taken, bridge crossed, fritter eaten. The app keeps everything for the next one.</div></div>';
+      const _done = Object.values(todoState).filter(Boolean).length + Object.values(packState).filter(Boolean).length;
+      host.innerHTML = '<p class="upnext-label">The trip, in the rearview</p>' +
+        '<div class="card"><div class="name">Wheels up ✓</div><div class="note">Boat taken, bridge crossed, fritter eaten. You checked off ' + _done + ' things along the way. Fog, brass, and bridge light — kept here for the next one.</div></div>';
       return;
     }
     let i = 0;
@@ -687,6 +724,7 @@ function renderDay(key){
       '<span class="when' + ghost + '">' + s.t + '</span>' +
       '<div class="name">' + s.n.replace("★",'<span class="star">★</span>') + '</div>' +
       '<div class="note">' + s.note + '</div>' +
+      (distStr(s.n) ? '<div class="dist">' + distStr(s.n) + '</div>' : '') +
       (acts.length ? '<div class="acts">' + acts.join("") + '</div>' : '') +
     '</div></div>';
   }).join("");
@@ -808,6 +846,96 @@ document.addEventListener("visibilitychange", () => {
 renderNow();
 fetchWx();
 startTick();
+
+/* ---- distance + directions from current location ---- */
+const COORDS = {
+  "Land SFO · Harvey Milk T1":[37.6166,-122.3850],
+  "Fairmont — bag drop":[37.7926,-122.4103],
+  "In-N-Out · Fisherman's Wharf":[37.8079,-122.4177],
+  "Acrimony":[37.7763,-122.4244],
+  "Optical Underground":[37.7768,-122.4255],
+  "Niku Steakhouse ★":[37.7700,-122.4080],
+  "Tonga Room (or Moongate)":[37.7926,-122.4103],
+  "Walk down to brunch":[37.8003,-122.4102],
+  "Hilda and Jesse ★":[37.8003,-122.4102],
+  "Caffe Trieste":[37.7975,-122.4073],
+  "City Lights → Al's Attire":[37.7980,-122.4070],
+  "Hotel reset":[37.7926,-122.4103],
+  "California St cable car → Ferry Building":[37.7955,-122.3937],
+  "Golden Gate Ferry · Gate B":[37.7956,-122.3934],
+  "Barrel House Tavern":[37.8568,-122.4789],
+  "The event · ERIA":[37.8566,-122.4790],
+  "Uber home over the Golden Gate":[37.7926,-122.4103],
+  "Bob's Donuts":[37.7906,-122.4205],
+  "Up, coffee, pack":[37.7926,-122.4103],
+  "Uber to SFO":[37.6213,-122.3790],
+  "Harvey Milk T1":[37.6166,-122.3850],
+  "Wheels up":[37.6213,-122.3790]
+};
+function _hav(a,b){const R=3958.8,r=x=>x*Math.PI/180;const dLa=r(b[0]-a[0]),dLo=r(b[1]-a[1]);const x=Math.sin(dLa/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+function distStr(name){
+  if(!_here) return "";
+  const c=COORDS[name]; if(!c) return "";
+  const mi=_hav(_here,c);
+  const t = mi<=1.6 ? ("~"+Math.max(1,Math.round(mi/3*60))+" min walk") : ("~"+Math.max(1,Math.round(mi/16*60))+" min by car");
+  return (mi<10?mi.toFixed(1):Math.round(mi))+" mi · "+t+" away";
+}
+function initGeo(){
+  if(!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(p=>{
+    _here=[p.coords.latitude,p.coords.longitude];
+    try{ renderNow(); ["fri","sat","sun"].forEach(renderDay); }catch(e){}
+  }, ()=>{}, {enableHighAccuracy:false,timeout:9000,maximumAge:600000});
+}
+initGeo();
+
+/* ---- scrub-the-sky: drag the header to run the light ---- */
+(function(){
+  const hdr=document.querySelector('header'); if(!hdr) return;
+  const lab=document.getElementById('scrublab'); const root=document.documentElement;
+  let active=false, started=false, sx=0;
+  function apply(clientX){
+    const r=hdr.getBoundingClientRect();
+    let f=(clientX-r.left)/r.width; f=Math.max(0,Math.min(1,f));
+    const h=f*24; _scrubbing=true; root.style.transition='none'; setSkyForHour(h);
+    if(lab){ let hh=Math.floor(h); const mm=Math.round((h-hh)*60); const ap=hh<12?'AM':'PM'; let h12=hh%12; if(h12===0) h12=12; lab.textContent=h12+':'+(mm<10?'0':'')+mm+' '+ap; lab.style.opacity='1'; }
+  }
+  function end(){ if(started){ _scrubbing=false; root.style.removeProperty('transition'); if(lab) lab.style.opacity='0'; updateSky(); } active=false; started=false; }
+  hdr.addEventListener('pointerdown',e=>{ active=true; started=false; sx=e.clientX; });
+  hdr.addEventListener('pointermove',e=>{ if(active && (started || Math.abs(e.clientX-sx)>6)){ started=true; apply(e.clientX); } });
+  hdr.addEventListener('pointerup',end);
+  hdr.addEventListener('pointerleave',end);
+  hdr.addEventListener('pointercancel',end);
+})();
+
+/* ---- sunset postcard ---- */
+function makePostcard(){
+  try{
+    const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+    const g=x.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#0C1018');g.addColorStop(.34,'#26202E');g.addColorStop(.6,'#6E3B33');g.addColorStop(.84,'#C0502E');g.addColorStop(1,'#F2A05C');
+    x.fillStyle=g;x.fillRect(0,0,W,H);
+    const sg=x.createRadialGradient(W*0.32,H*0.64,10,W*0.32,H*0.64,280);
+    sg.addColorStop(0,'rgba(255,241,214,.95)');sg.addColorStop(.5,'rgba(251,194,121,.7)');sg.addColorStop(1,'rgba(251,194,121,0)');
+    x.fillStyle=sg;x.beginPath();x.arc(W*0.32,H*0.64,280,0,7);x.fill();
+    const sc=W/390, oy=H*0.56; x.save();x.translate(0,oy);x.scale(sc,sc);
+    x.strokeStyle='#0A0E12';x.fillStyle='#0A0E12';x.lineWidth=3;
+    x.fillRect(0,120,390,30);
+    [[0,70,52,104,100,42],[100,42,195,104,290,42],[290,42,338,104,390,70]].forEach(p=>{x.beginPath();x.moveTo(p[0],p[1]);x.quadraticCurveTo(p[2],p[3],p[4],p[5]);x.stroke();});
+    [[93,24],[105,24],[283,24],[295,24]].forEach(t=>x.fillRect(t[0],t[1],6,98));
+    [[91,38],[91,60],[281,38],[281,60]].forEach(t=>x.fillRect(t[0],t[1],22,5));
+    x.lineWidth=1.4;[[55,80],[130,60],[160,78],[195,88],[230,78],[260,60],[335,80]].forEach(s=>{x.beginPath();x.moveTo(s[0],s[1]);x.lineTo(s[0],122);x.stroke();});
+    x.restore();
+    x.fillStyle='#fff';x.textAlign='left';
+    x.font='600 40px ui-monospace, Menlo, monospace';x.globalAlpha=.85;x.fillText('SAN FRANCISCO',80,156);x.globalAlpha=1;
+    x.font='300 190px Futura, "Century Gothic", sans-serif';x.fillText('SFO',72,330);
+    x.font='400 46px Georgia, serif';x.fillStyle='rgba(255,255,255,.92)';x.fillText('July 17–19, 2026',82,398);
+    x.save();x.translate(W-228,86);x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=3;x.setLineDash([11,9]);x.strokeRect(0,0,150,184);x.setLineDash([]);
+    x.fillStyle='rgba(255,255,255,.9)';x.textAlign='center';x.font='700 24px ui-monospace,Menlo,monospace';x.fillText('SFO',75,46);x.font='400 17px Georgia,serif';x.fillText('the golden',75,108);x.fillText('hour',75,134);x.restore();
+    c.toBlob(b=>{ if(!b) return; const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download='SFO-postcard.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),5000); }, 'image/png');
+  }catch(e){}
+}
+(function(){ const b=document.getElementById('pcbtn'); if(b) b.addEventListener('click',makePostcard); })();
 </script>
 </body>
 </html>
