@@ -247,7 +247,7 @@
         </p>
         <div class="field"><label for="k-aa">AA record locator</label><input id="k-aa" data-k="aa" autocomplete="off" placeholder="e.g. KXQZTR"></div>
         <div class="field"><label for="k-hotel">Fairmont confirmation #</label><input id="k-hotel" data-k="hotel" autocomplete="off" placeholder="confirmation number"></div>
-        <div class="field"><label for="k-dinner">Friday dinner (booked where / time / conf)</label><input id="k-dinner" data-k="dinner" autocomplete="off" placeholder="e.g. Mister Jiu's 7:00 — Resy"></div>
+        <div class="field"><label for="k-dinner">Friday dinner (booked where / time / conf)</label><input id="k-dinner" data-k="dinner" autocomplete="off" placeholder="e.g. Niku 6:00 — counter for 1"></div>
         <div class="field"><label for="k-notes">Anything else</label><input id="k-notes" data-k="notes" autocomplete="off" placeholder="notes"></div>
         <p class="savenote">Edits save automatically when this runs inside Claude.</p>
       </div>
@@ -413,8 +413,8 @@ const DAYS = {
     {ts:U(2026,6,17,13,0), t:"1:00", n:"The hill — your call", note:"Daylight penance climb back up Nob Hill (~30 min), or Uber straight to Hayes Valley."},
     {ts:U(2026,6,17,13,30), t:"1:30", n:"Acrimony", note:"Designer multi-brand, the Lemaire / Our Legacy lane.", addr:"Acrimony, 333 Hayes St, San Francisco"},
     {ts:U(2026,6,17,15,0), t:"3:00", n:"Optical Underground", note:"Discounted Mykita treasure hunt, one alley over. Open till 7. Hotel by 4:30 to check in + change.", addr:"Optical Underground, 333 Linden St, San Francisco"},
-    {ts:U(2026,6,17,18,30), t:"6:30", n:"Mister Jiu's · Plan A ★", note:"Book June 17 on Resy · Peking duck for one · bar walk-ins from 5. Ten-minute downhill walk.", addr:"Mister Jiu's, 28 Waverly Pl, San Francisco", tel:"+14158579688", major:true},
-    {skip:true, t:"ALT", n:"Niku Steakhouse · Plan B ★", note:"18-seat chef's counter at the wagyu grill. 10-min Uber.", addr:"Niku Steakhouse, 61 Division St, San Francisco", tel:"+14158297817"},
+    {ts:U(2026,6,17,18,0), t:"6:00", n:"Niku Steakhouse ★", note:"Booked: chef's counter for 1, 6:00 PM. The 18-seat wagyu grill. 10-min Uber.", addr:"Niku Steakhouse, 61 Division St, San Francisco", tel:"+14158297817", major:true},
+    {skip:true, t:"ALT", n:"Mister Jiu's · backup ★", note:"If Niku falls through: Peking duck for one, bar walk-ins from 5. Ten-minute downhill walk.", addr:"Mister Jiu's, 28 Waverly Pl, San Francisco", tel:"+14158579688"},
     {ts:U(2026,6,17,21,15), t:"NIGHT", n:"Tonga Room (or Moongate)", note:"Tiki institution inside your hotel — indoor rainstorms, band on a boat."}
   ],
   sat: [
@@ -465,8 +465,8 @@ const TODOS = [
     {id:"alarm", t:"Calendar alert for the night of June 16 → 17 (reservation drop)"}
   ]},
   {g:"Tuesday, June 17 — booking day", items:[
-    {id:"bookjius", t:"Book Mister Jiu's solo ~6:30–7:30 PM on Resy (opens midnight PT) · pre-order Peking duck · note no pork"},
-    {id:"bookniku", t:"Fallback: Niku chef's counter on OpenTable (also opens 30 days out)"}
+    {id:"bookniku", t:"Booked: Niku chef's counter, Fri 6:00 PM, party of 1", done:true},
+    {id:"bookjius", t:"Optional backup: grab Mister Jiu's on Resy (duck for one) if you'd rather"}
   ]},
   {g:"Week of July 7", items:[
     {id:"wx", t:"Check the 10-day forecast (it will say 64–68°F, fog, no rain)"},
