@@ -57,13 +57,23 @@
   .wrap{max-width:480px;margin:0 auto;padding:0 18px;position:relative;z-index:1;}
 
   header{
-    padding:calc(env(safe-area-inset-top, 0px) + 22px) 0 14px;
+    position:relative;overflow:hidden;
+    min-height:198px;display:flex;flex-direction:column;
+    margin:0 -18px 18px;
+    padding:calc(env(safe-area-inset-top, 0px) + 22px) 18px 16px;
     border-bottom:3px solid var(--bridge);
     box-shadow:0 18px 32px -20px rgba(224,85,47,.5);
-    margin-bottom:18px;
   }
+  .hscene{position:absolute;inset:0;z-index:0;pointer-events:none;}
+  .hscene .hsky{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 58%,var(--sky-horizon) 100%);}
+  .hscene .hglow{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:180%;height:72%;background:radial-gradient(50% 92% at 50% 100%,var(--sky-horizon) 0%,transparent 70%);opacity:.92;}
+  .hscene .hbridge{position:absolute;left:0;bottom:-1px;width:100%;height:auto;display:block;}
+  .hscene .hveil{position:absolute;inset:0;opacity:0;background:linear-gradient(0deg,rgba(180,195,205,.34),rgba(180,195,205,.05) 48%,transparent 74%);transition:opacity 1.4s ease;}
+  header .eyebrow, header h1, header .sub{position:relative;z-index:1;}
+  body:not([data-tab="now"]) .hscene{opacity:0;transition:opacity .4s ease;}
+  body[data-tab="now"] #bridge{opacity:0;}
   .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);margin-bottom:4px;}
-  h1{font-family:"Marcellus", Georgia, serif;font-size:54px;line-height:1;font-weight:400;letter-spacing:.02em;color:var(--fog);}
+  h1{font-family:"Futura","Century Gothic",system-ui,sans-serif;font-size:40px;line-height:1;font-weight:500;letter-spacing:.06em;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.42);}
   .sub{margin-top:6px;font-size:13.5px;color:var(--soft);}
   .sub b{color:var(--fog);font-weight:600;}
 
@@ -220,7 +230,7 @@
   .tab[aria-selected="true"]{color:#fff;border-top-color:var(--bridge);}
   .tab:focus-visible{outline:3px solid var(--glow);outline-offset:-3px;}
 
-  #sky{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 50%,var(--sky-horizon) 100%);}
+  #sky{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-top) 44%,var(--sky-mid) 78%,var(--sky-horizon) 100%);}
   #sunglow{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:160%;height:48%;background:radial-gradient(50% 82% at 50% 100%, var(--sky-horizon) 0%, transparent 70%);opacity:.85;}
   #bridge{position:absolute;left:0;bottom:0;width:100%;height:auto;display:block;}
   /* Golden Hour overdrive */
@@ -249,7 +259,7 @@
   }
 </style>
 </head>
-<body>
+<body data-tab="now">
 <div id="sky" aria-hidden="true">
   <div id="sunglow"></div>
   <svg id="bridge" viewBox="0 0 390 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
@@ -264,6 +274,19 @@
 <div class="wrap">
 
   <header>
+    <div class="hscene" aria-hidden="true">
+      <div class="hsky"></div>
+      <div class="hglow"></div>
+      <svg class="hbridge" viewBox="0 0 390 150" preserveAspectRatio="xMidYMax meet">
+        <rect x="0" y="120" width="390" height="30" fill="#0A0E12"/>
+        <path d="M0 70 Q 52 104 100 42" stroke="#0A0E12" stroke-width="3" fill="none"/>
+        <path d="M100 42 Q 195 104 290 42" stroke="#0A0E12" stroke-width="3" fill="none"/>
+        <path d="M290 42 Q 338 104 390 70" stroke="#0A0E12" stroke-width="3" fill="none"/>
+        <g fill="#0A0E12"><rect x="93" y="24" width="6" height="98"/><rect x="105" y="24" width="6" height="98"/><rect x="91" y="38" width="22" height="5"/><rect x="91" y="60" width="22" height="5"/><rect x="283" y="24" width="6" height="98"/><rect x="295" y="24" width="6" height="98"/><rect x="281" y="38" width="22" height="5"/><rect x="281" y="60" width="22" height="5"/></g>
+        <g stroke="#0A0E12" stroke-width="1.4"><line x1="55" y1="80" x2="55" y2="122"/><line x1="130" y1="60" x2="130" y2="122"/><line x1="160" y1="78" x2="160" y2="122"/><line x1="195" y1="88" x2="195" y2="122"/><line x1="230" y1="78" x2="230" y2="122"/><line x1="260" y1="60" x2="260" y2="122"/><line x1="335" y1="80" x2="335" y2="122"/></g>
+      </svg>
+      <div class="hveil"></div>
+    </div>
     <div class="eyebrow">San Francisco · July 17–19, 2026</div>
     <h1>SFO</h1>
     <div class="sub"><b>Fairmont, Nob Hill</b> · no car · boat there, bridge back</div>
@@ -313,6 +336,9 @@
         <svg class="boatferry" width="26" height="15" viewBox="0 0 26 15"><path d="M2 8h22l-3 6H5z" fill="#C8452A"/><rect x="8" y="2" width="11" height="6" rx="1" fill="#C8452A"/><rect x="10" y="3.6" width="2.6" height="2.6" fill="#E8ECEB"/><rect x="14.4" y="3.6" width="2.6" height="2.6" fill="#E8ECEB"/></svg>
         <span class="port sa">Sausalito</span>
       </div>
+      <div class="tear" aria-hidden="true"></div>
+      <span class="lbl">Fare · how to ride</span>
+      Tap Clipper (Apple Wallet) at the Gate B reader before boarding · SF&nbsp;→&nbsp;Sausalito ≈ $14.<br>No card yet? Wallet → + → Transit Card → Clipper → load $20+.
     </div>
     <div class="line" id="line-sat"></div>
     <p class="endline">— end of line —</p>
@@ -456,7 +482,6 @@ const _reduceMo = window.matchMedia && window.matchMedia('(prefers-reduced-motio
 let _skySet=false;
 function updateSky(){
   try{
-    if(_reduceMo && _skySet) return;
     const d=new Date(sfNow()), h=d.getUTCHours()+d.getUTCMinutes()/60;
     let i=0; while(i<SKY.length-1 && SKY[i+1][0]<=h) i++;
     const a=SKY[i], b=SKY[Math.min(i+1,SKY.length-1)];
@@ -465,6 +490,9 @@ function updateSky(){
     r.setProperty('--sky-top',_mix(a[1][0],b[1][0],t));
     r.setProperty('--sky-mid',_mix(a[1][1],b[1][1],t));
     r.setProperty('--sky-horizon',_mix(a[1][2],b[1][2],t));
+    const fog=(_wx===45||_wx===48), cloud=(_wx===2||_wx===3);
+    document.querySelectorAll('.hveil').forEach(v=>{v.style.opacity = fog?'1':(cloud?'.4':'0');});
+    const skyEl=document.getElementById('sky'); if(skyEl) skyEl.style.filter = fog?'saturate(.6) brightness(.9)':'';
     _skySet=true;
   }catch(e){}
 }
@@ -488,7 +516,7 @@ const DAYS = {
     {ts:U(2026,6,18,13,40), t:"1:40", n:"City Lights → Al's Attire", note:"Beat-era books, then the bespoke clothier at 1300 Grant.", addr:"Al's Attire, 1300 Grant Ave, San Francisco"},
     {ts:U(2026,6,18,14,30), t:"2:30", n:"Hotel reset", note:"Uber 5 min up the hill. Rest, change for the event.", addr:"Fairmont San Francisco, 950 Mason St, San Francisco"},
     {ts:U(2026,6,18,15,25), t:"3:25", n:"California St cable car → Ferry Building", note:"From the hotel's front door. $9, tap Clipper. Optional Heath Ceramics browse.", addr:"Ferry Building, San Francisco"},
-    {ts:U(2026,6,18,16,0), t:"4:00", n:"Golden Gate Ferry · Gate B", note:"Outdoor deck, left side — Alcatraz one way, the bridge the other. Jacket on.", major:true},
+    {ts:U(2026,6,18,16,0), t:"4:00", n:"Golden Gate Ferry · Gate B", note:"Outdoor deck, left side — Alcatraz one way, the bridge the other. Jacket on. Tap Clipper at the Gate B reader (≈$14).", major:true},
     {ts:U(2026,6,18,16,45), t:"4:45", n:"Barrel House Tavern", note:"Pre-event drink on the bay-view back deck until ~5:45.", addr:"Barrel House Tavern, 660 Bridgeway, Sausalito"},
     {ts:U(2026,6,18,18,0), t:"6:00", n:"The event · ERIA", note:"562 Bridgeway, glass on the water. Sunset ~8:30 behind the skyline you sailed from.", addr:"ERIA, 562 Bridgeway, Sausalito", major:true},
     {ts:U(2026,6,18,21,30), t:"AFTER", n:"Uber home over the Golden Gate", note:"~30 min, $60–80, bridge lit up. Toll's in the fare.", addr:"Fairmont San Francisco, 950 Mason St, San Francisco"},
@@ -503,7 +531,6 @@ const DAYS = {
 };
 
 const COUNTS = [
-  {l:"Jiu's rez opens", ts:U(2026,5,17,0,0)},
   {l:"Wheels down", ts:U(2026,6,17,10,24)},
   {l:"The 4:00 boat", ts:U(2026,6,18,16,0)},
   {l:"The event", ts:U(2026,6,18,18,0)},
@@ -512,7 +539,6 @@ const COUNTS = [
 ];
 
 const NUDGES = [
-  {a:U(2026,5,16,12,0), b:U(2026,5,17,6,0),  x:"Resy night — Mister Jiu's opens for July 17 at midnight PT. Niku on OpenTable is the fallback."},
   {a:U(2026,6,17,0,0),  b:U(2026,6,17,10,24), x:"Travel day. Carry-on check: the jacket, chargers, Clipper in Wallet."},
   {a:U(2026,6,18,7,0),  b:U(2026,6,18,11,15), x:"The big day. Phone to 100%, battery pack in pocket, cash for Trieste."},
   {a:U(2026,6,18,14,0), b:U(2026,6,18,16,0),  x:"Jacket — the deck is cold. Cable car from the front door at 3:25."},
@@ -670,6 +696,7 @@ function renderDay(key){
 /* ---- live weather (the app's only network call; hides itself offline) ---- */
 const WXURL = "https://api.open-meteo.com/v1/forecast?latitude=37.7749,37.8591&longitude=-122.4194,-122.4853&current=temperature_2m,weather_code,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FLos_Angeles";
 let lastWx = 0;
+let _wx = null;
 function wxWord(c){
   const m = {0:"clear",1:"mostly clear",2:"partly cloudy",3:"overcast",45:"fog",48:"fog",51:"drizzle",53:"drizzle",55:"drizzle",61:"rain",63:"rain",65:"rain",80:"showers",81:"showers",82:"showers"};
   return m[c] || "";
@@ -683,6 +710,7 @@ async function fetchWx(){
     const arr = Array.isArray(j) ? j : [j];
     if (arr.length < 2 || !arr[0].current || !arr[1].current) return;
     const sf = arr[0].current, sa = arr[1].current;
+    _wx = sf.weather_code; updateSky();
     const el = document.getElementById("wx");
     el.innerHTML = "<b>SF</b> " + Math.round(sf.temperature_2m) + "° " + wxWord(sf.weather_code) +
       " · <b>Sausalito</b> " + Math.round(sa.temperature_2m) + "° " + wxWord(sa.weather_code) +
@@ -744,11 +772,13 @@ document.querySelectorAll("[data-k]").forEach(inp => {
 loadState();
 
 const tabs = document.querySelectorAll(".tab");
+document.body.dataset.tab = "now";
 tabs.forEach(t => t.addEventListener("click", () => {
   const apply = () => {
     tabs.forEach(x => x.setAttribute("aria-selected", x === t ? "true" : "false"));
     document.querySelectorAll(".panel").forEach(p => p.classList.remove("on"));
     document.getElementById("p-" + t.dataset.p).classList.add("on");
+    document.body.dataset.tab = t.dataset.p;
     window.scrollTo({top:0});
   };
   if (document.startViewTransition && !_reduceMo){ document.startViewTransition(apply); }
