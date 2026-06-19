@@ -72,8 +72,7 @@
   .hscene .hbridge{position:absolute;left:0;bottom:-1px;width:100%;height:auto;display:block;}
   .hscene .hveil{position:absolute;inset:0;opacity:0;background:linear-gradient(0deg,rgba(180,195,205,.34),rgba(180,195,205,.05) 48%,transparent 74%);transition:opacity 1.4s ease;}
   header .eyebrow, header h1, header .sub{position:relative;z-index:1;}
-  body:not([data-tab="now"]) .hscene{opacity:0;transition:opacity .4s ease;}
-  body[data-tab="now"] #bridge{opacity:0;}
+  #bridge{opacity:0;}
   #scrublab{position:absolute;top:calc(env(safe-area-inset-top,0px) + 24px);right:18px;z-index:2;font:700 11px/1 ui-monospace,"SF Mono",Menlo,monospace;color:#fff;opacity:0;transition:opacity .2s ease;letter-spacing:.08em;text-shadow:0 1px 8px rgba(0,0,0,.6);pointer-events:none;}
   .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);margin-bottom:4px;}
   h1{font-family:"Futura","Century Gothic",system-ui,sans-serif;font-size:40px;line-height:1;font-weight:500;letter-spacing:.06em;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.42);}
@@ -309,7 +308,7 @@
     <div id="scrublab" aria-hidden="true"></div>
     <div class="eyebrow">San Francisco · July 17–19, 2026</div>
     <h1>SFO</h1>
-    <div class="sub"><b>Fairmont, Nob Hill</b> · no car · boat there, bridge back</div>
+    <div class="sub" id="hood">San Francisco</div>
   </header>
 
   <section class="panel on" id="p-now" role="tabpanel" aria-labelledby="t-now">
@@ -374,7 +373,7 @@
         </ul>
         <h4>North Beach — Saturday</h4>
         <ul>
-          <li><a class="place" target="_blank" rel="noopener" href="https://maps.apple.com/?q=Al%27s%20Attire%2C%201300%20Grant%20Ave%2C%20San%20Francisco"><span><b>Al's Attire · 1300 Grant</b><span>Old-world bespoke clothier &amp; cobbler — exists nowhere else</span></span><span class="chev">›</span></a></li>
+          <li><a class="place" target="_blank" rel="noopener" href="https://maps.apple.com/?q=The%20Darkside%20Initiative%2C%201827%20Powell%20St%2C%20San%20Francisco"><span><b>The Darkside Initiative · 1827 Powell</b><span>SF's techwear vault — Acronym, Arc'teryx Veilance, Stone Island Shadow Project</span></span><span class="chev">›</span></a></li>
         </ul>
         <h4>Union Square — anytime</h4>
         <ul>
@@ -388,7 +387,7 @@
         </ul>
         <h4>Ferry Building — pre-boat</h4>
         <ul>
-          <li><a class="place" target="_blank" rel="noopener" href="https://maps.apple.com/?q=Heath%20Ceramics%2C%20Ferry%20Building%2C%20San%20Francisco"><span><b>Heath Ceramics</b><span>Sausalito-born icon, browsable in 10 minutes</span></span><span class="chev">›</span></a></li>
+          <li><a class="place" target="_blank" rel="noopener" href="https://maps.apple.com/?q=Heath%20Ceramics%2C%20Ferry%20Building%2C%20San%20Francisco"><span><b>Heath Ceramics · Ferry Building</b><span>Sausalito-born ceramics — the event gift: a bud vase or coupe set, open till 5</span></span><span class="chev">›</span></a></li>
         </ul>
       </div>
     </details>
@@ -531,9 +530,9 @@ const DAYS = {
     {ts:U(2026,6,18,11,15), t:"11:15", n:"Walk down to brunch", note:"Ten minutes, Mason → Union, all downhill."},
     {ts:U(2026,6,18,11,30), t:"11:30", n:"Hilda and Jesse ★", note:"$98 five-course Chef's Adventure. Ask for a counter seat. \u201CNo pork, bacon fine\u201D is on the rez.", addr:"Hilda and Jesse, 701 Union St, San Francisco", major:true},
     {ts:U(2026,6,18,13,20), t:"1:20", n:"Caffe Trieste", note:"Espresso at the 1956 original. Cash only.", addr:"Caffe Trieste, 601 Vallejo St, San Francisco"},
-    {ts:U(2026,6,18,13,40), t:"1:40", n:"City Lights → Al's Attire", note:"Beat-era books, then the bespoke clothier at 1300 Grant.", addr:"Al's Attire, 1300 Grant Ave, San Francisco"},
+    {ts:U(2026,6,18,13,40), t:"1:40", n:"City Lights → Darkside Initiative", note:"Beat-era books at 261 Columbus, then SF's techwear vault — Acronym, Arc'teryx Veilance, Stone Island Shadow — at 1827 Powell.", addr:"The Darkside Initiative, 1827 Powell St, San Francisco"},
     {ts:U(2026,6,18,14,30), t:"2:30", n:"Hotel reset", note:"Uber 5 min up the hill. Rest, change for the event.", addr:"Fairmont San Francisco, 950 Mason St, San Francisco"},
-    {ts:U(2026,6,18,15,25), t:"3:25", n:"California St cable car → Ferry Building", note:"From the hotel's front door. $9, tap Clipper. Optional Heath Ceramics browse.", addr:"Ferry Building, San Francisco"},
+    {ts:U(2026,6,18,15,25), t:"3:25", n:"California St cable car → Ferry Building", note:"From the hotel's front door. $9, tap Clipper. Grab the grad's gift at Heath Ceramics (open till 5) before Gate B.", addr:"Ferry Building, San Francisco"},
     {ts:U(2026,6,18,16,0), t:"4:00", n:"Golden Gate Ferry · Gate B", note:"Outdoor deck, left side — Alcatraz one way, the bridge the other. Jacket on. Tap Clipper at the Gate B reader (≈$14).", major:true},
     {ts:U(2026,6,18,16,45), t:"4:45", n:"Barrel House Tavern", note:"Pre-event drink on the bay-view back deck until ~5:45.", addr:"Barrel House Tavern, 660 Bridgeway, Sausalito"},
     {ts:U(2026,6,18,18,0), t:"6:00", n:"The event · ERIA", note:"562 Bridgeway, glass on the water. Sunset ~8:30 behind the skyline you sailed from.", addr:"ERIA, 562 Bridgeway, Sausalito", major:true},
@@ -672,6 +671,7 @@ function renderNow(){
     updateSky();
     const now = sfNow();
     setPlaceLine(now);
+    try{const _hd=document.getElementById("hood"); if(_hd) _hd.textContent=currentHood(now);}catch(e){}
     document.getElementById("chips").innerHTML = COUNTS.map(c => {
       const ms = c.ts - now, d = fmtDelta(ms);
       const warm = (c.l.indexOf("Sunset") >= 0 && ms > 0 && ms < 3*3600000) ? " sunsetwarm" : "";
@@ -859,7 +859,7 @@ const COORDS = {
   "Walk down to brunch":[37.8003,-122.4102],
   "Hilda and Jesse ★":[37.8003,-122.4102],
   "Caffe Trieste":[37.7975,-122.4073],
-  "City Lights → Al's Attire":[37.7980,-122.4070],
+  "City Lights → Darkside Initiative":[37.7990,-122.4090],
   "Hotel reset":[37.7926,-122.4103],
   "California St cable car → Ferry Building":[37.7955,-122.3937],
   "Golden Gate Ferry · Gate B":[37.7956,-122.3934],
@@ -872,6 +872,21 @@ const COORDS = {
   "Harvey Milk T1":[37.6166,-122.3850],
   "Wheels up":[37.6213,-122.3790]
 };
+const HOODS = {"Land SFO · Harvey Milk T1":"SFO","Fairmont — bag drop":"Nob Hill","In-N-Out · Fisherman's Wharf":"Fisherman's Wharf","Acrimony":"Hayes Valley","Optical Underground":"Hayes Valley","Niku Steakhouse ★":"SoMa","Tonga Room (or Moongate)":"Nob Hill","Walk down to brunch":"North Beach","Hilda and Jesse ★":"North Beach","Caffe Trieste":"North Beach","City Lights → Darkside Initiative":"North Beach","Hotel reset":"Nob Hill","California St cable car → Ferry Building":"Embarcadero","Golden Gate Ferry · Gate B":"Embarcadero","Barrel House Tavern":"Sausalito","The event · ERIA":"Sausalito","Uber home over the Golden Gate":"Nob Hill","Bob's Donuts":"Polk Gulch","Up, coffee, pack":"Nob Hill","Uber to SFO":"SFO","Harvey Milk T1":"SFO","Wheels up":"SFO"};
+function currentHood(now){
+  try{
+    if(_here){
+      let best=null,bd=1e9; for(const k in COORDS){const d=_hav(_here,COORDS[k]); if(d<bd){bd=d;best=k;}}
+      if(best && bd<3 && HOODS[best]) return HOODS[best];
+    }
+    const sc=[].concat(DAYS.fri,DAYS.sat,DAYS.sun).filter(s=>!s.skip).sort((a,b)=>a.ts-b.ts);
+    if(sc.length && now>=sc[0].ts && now<sc[sc.length-1].ts){
+      let i=0; while(i<sc.length && sc[i].ts<=now) i++;
+      const cur=sc[i-1]; if(cur && HOODS[cur.n]) return HOODS[cur.n];
+    }
+  }catch(e){}
+  return "San Francisco";
+}
 function _hav(a,b){const R=3958.8,r=x=>x*Math.PI/180;const dLa=r(b[0]-a[0]),dLo=r(b[1]-a[1]);const x=Math.sin(dLa/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
 function distStr(name){
   if(!_here) return "";
