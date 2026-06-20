@@ -783,6 +783,21 @@ let packState = {};
 PACK.forEach(g => g.items.forEach(i => packState[i.id] = false));
 let kinfo = {aa:"", hotel:"", dinner:"", notes:""};
 
+/* storage shim: Claude preview's window.storage when present, else localStorage (the live device) */
+const _hasWS = !!(window.storage && window.storage.get && window.storage.set);
+let _persists = _hasWS;
+if(!_persists){ try{ localStorage.setItem("__sfo_probe","1"); localStorage.removeItem("__sfo_probe"); _persists=true; }catch(e){ _persists=false; } }
+const Store = {
+  async get(k){
+    if(_hasWS){ try{ return await window.storage.get(k); }catch(e){} }
+    try{ const v=localStorage.getItem(k); return (v==null)?null:{value:v}; }catch(e){ return null; }
+  },
+  async set(k,v){
+    if(_hasWS){ try{ await window.storage.set(k,v); return; }catch(e){} }
+    try{ localStorage.setItem(k,v); }catch(e){}
+  }
+};
+
 function paintChecklist(hostId, groups, st, save, doneMsg){
   const host = document.getElementById(hostId);
   host.innerHTML = groups.map(g =>
@@ -812,24 +827,21 @@ function paintChecklist(hostId, groups, st, save, doneMsg){
 
 async function loadState(){
   try{
-    const r = await window.storage.get("sfo-trip-todos");
+    const r = await Store.get("sfo-trip-todos");
     if (r && r.value) todoState = Object.assign(todoState, JSON.parse(r.value));
-    const p = await window.storage.get("sfo-trip-pack");
+    const p = await Store.get("sfo-trip-pack");
     if (p && p.value) packState = Object.assign(packState, JSON.parse(p.value));
-    const k = await window.storage.get("sfo-trip-keyinfo");
+    const k = await Store.get("sfo-trip-keyinfo");
     if (k && k.value) kinfo = Object.assign(kinfo, JSON.parse(k.value));
-  }catch(e){
-    document.querySelectorAll(".savenote").forEach(el => {
-      el.textContent = "Your changes stay while this tab is open.";
-    });
-  }
+  }catch(e){}
   paintChecklist("todos", TODOS, todoState, saveTodos, "Nothing left but the going.");
   paintChecklist("pack", PACK, packState, savePack, "All packed. The jacket's the whole game.");
   document.querySelectorAll("[data-k]").forEach(inp => { inp.value = kinfo[inp.dataset.k] || ""; });
+  if(!_persists){ document.querySelectorAll(".savenote").forEach(el => { el.textContent = "Your changes stay while this tab is open."; }); }
 }
-async function saveTodos(){ try{ await window.storage.set("sfo-trip-todos", JSON.stringify(todoState)); }catch(e){} }
-async function savePack(){ try{ await window.storage.set("sfo-trip-pack", JSON.stringify(packState)); }catch(e){} }
-async function saveKinfo(){ try{ await window.storage.set("sfo-trip-keyinfo", JSON.stringify(kinfo)); }catch(e){} }
+async function saveTodos(){ await Store.set("sfo-trip-todos", JSON.stringify(todoState)); }
+async function savePack(){ await Store.set("sfo-trip-pack", JSON.stringify(packState)); }
+async function saveKinfo(){ await Store.set("sfo-trip-keyinfo", JSON.stringify(kinfo)); }
 
 let kTimer = null;
 document.querySelectorAll("[data-k]").forEach(inp => {
