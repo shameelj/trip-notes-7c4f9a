@@ -259,12 +259,7 @@
   @keyframes vtInL{from{opacity:0;transform:translateX(-7%);}to{opacity:1;transform:none;}}
   .chip.sunsetwarm{border-color:var(--glow);box-shadow:0 0 16px -6px rgba(242,132,92,.55);}
   .chip.sunsetwarm .cv{color:#E0552F;}
-  .gatebtn{display:inline-flex;align-items:center;gap:7px;margin-top:11px;padding:7px 14px;min-height:40px;border:1.5px solid var(--brass);background:transparent;color:var(--brass);border-radius:999px;font:600 12.5px/1 -apple-system,sans-serif;letter-spacing:.02em;cursor:pointer;position:relative;z-index:2;}
-  .gatebtn svg{width:15px;height:15px;display:block;}
-  .gatebtn:active{background:var(--brass);color:var(--night);}
-  .gatebtn:focus-visible{outline:3px solid var(--glow);outline-offset:2px;}
-  .gatedial{position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;z-index:3;width:86px;pointer-events:none;text-align:center;opacity:0;transform:scale(.9);transition:opacity .25s ease,transform .25s cubic-bezier(.22,1,.36,1);}
-  .gatedial.show{opacity:1;transform:none;}
+  .gatedial{position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;z-index:3;width:86px;pointer-events:none;text-align:center;}
   .gatedial svg{width:64px;height:64px;display:block;margin:0 auto;overflow:visible;}
   #gateneedle{transform-box:view-box;transform-origin:60px 62px;transition:transform .12s linear;}
   .gatecap{margin-top:4px;font:600 9.5px/1.25 ui-monospace,Menlo,monospace;color:var(--brass);letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.6);}
@@ -314,16 +309,14 @@
     <div class="eyebrow">San Francisco · July 17–19, 2026</div>
     <h1>SFO</h1>
     <div class="sub" id="hood">San Francisco</div>
-    <button id="gatebtn" class="gatebtn" type="button" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><polygon points="12,5 14.2,13 12,11 9.8,13" fill="currentColor"/></svg><span id="gatetxt">Find the Gate</span></button>
-    <p id="gatelive" class="sr-only" aria-live="polite"></p>
-    <div id="gatedial" class="gatedial" aria-hidden="true">
+    <div id="gatedial" class="gatedial" role="img" aria-label="Compass to the Golden Gate">
       <svg viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" fill="rgba(12,18,24,.5)" stroke="var(--brass)" stroke-width="1.5"/>
         <g stroke="var(--brass)" stroke-width="1" opacity=".45"><line x1="60" y1="10" x2="60" y2="18"/><line x1="60" y1="102" x2="60" y2="110"/><line x1="10" y1="60" x2="18" y2="60"/><line x1="102" y1="60" x2="110" y2="60"/></g>
         <text id="gateN" x="60" y="30" text-anchor="middle" fill="var(--soft)" font-size="11" font-family="ui-monospace,Menlo,monospace" style="opacity:0">N</text>
         <g id="gateneedle"><polygon points="60,18 66,62 60,55 54,62" fill="var(--bridge)"/><polygon points="60,102 64,62 60,69 56,62" fill="var(--soft)" opacity=".45"/><circle cx="60" cy="62" r="3.5" fill="var(--brass)"/></g>
       </svg>
-      <div id="gatecap" class="gatecap"></div>
+      <div id="gatecap" class="gatecap" aria-hidden="true"></div>
     </div>
   </header>
 
@@ -1064,32 +1057,35 @@ function makePostcard(){
   sync();
 })();
 
-/* ---- O2: true the gate (a brass compass to the real Golden Gate) ---- */
+/* ---- O2: true the gate (a brass compass to the real Golden Gate, always on) ---- */
 (function(){
-  const btn=document.getElementById('gatebtn'); if(!btn) return;
-  const dial=document.getElementById('gatedial'), needle=document.getElementById('gateneedle'),
-        cap=document.getElementById('gatecap'), nMark=document.getElementById('gateN'), txt=document.getElementById('gatetxt'), lv=document.getElementById('gatelive');
+  const dial=document.getElementById('gatedial'); if(!dial) return;
+  const needle=document.getElementById('gateneedle'), cap=document.getElementById('gatecap'),
+        nMark=document.getElementById('gateN');
   const GATE=[37.8199,-122.4783], RAD=Math.PI/180;
-  let open=false, live=false, handler=null, hd=null, gotEvent=false, liveTimer=null;
+  let live=false, hd=null, asked=false;
   function bearing(a,b){ const la1=a[0]*RAD,la2=b[0]*RAD,dLo=(b[1]-a[1])*RAD; const y=Math.sin(dLo)*Math.cos(la2), x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dLo); return ((Math.atan2(y,x)/RAD)+360)%360; }
   function dirWord(d){ return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(d/22.5)%16]; }
   function origin(){ return _here || [37.792,-122.41]; }
   function setNeedle(deg){ if(needle) needle.style.transform='rotate('+deg.toFixed(1)+'deg)'; }
   function angDelta(a,b){ return ((b-a+540)%360)-180; }
-  function refresh(){ const o=origin(), brg=bearing(o,GATE), mi=_hav(o,GATE); const dist=(mi<10?mi.toFixed(1):Math.round(mi))+' mi', dir=dirWord(brg); if(cap) cap.textContent=dir+' · '+dist; if(lv) lv.textContent='Golden Gate · '+dir+' · '+dist; if(!live) setNeedle(brg); }
-  function onOrient(e){ let raw=(e.webkitCompassHeading!=null)?e.webkitCompassHeading:(e.alpha!=null?(360-e.alpha):null); if(raw==null) return; gotEvent=true; if(!live){ live=true; if(nMark) nMark.style.opacity='0'; } hd=(hd==null)?raw:(((hd+angDelta(hd,raw)*0.18)%360)+360)%360; setNeedle(bearing(origin(),GATE)-hd); }
-  function startLive(){ if(!open) return; live=true; gotEvent=false; if(nMark) nMark.style.opacity='0'; handler=onOrient; window.addEventListener('deviceorientation',handler,true); if(liveTimer) clearTimeout(liveTimer); liveTimer=setTimeout(()=>{ if(open && !gotEvent) staticDial(); }, 1500); }
-  function staticDial(){ live=false; if(nMark) nMark.style.opacity='1'; setNeedle(bearing(origin(),GATE)); }
-  function show(){
-    open=true; dial.classList.add('show'); txt.textContent='Hide compass'; btn.setAttribute('aria-expanded','true'); refresh();
+  function refresh(){ const o=origin(), brg=bearing(o,GATE), mi=_hav(o,GATE); const dist=(mi<10?mi.toFixed(1):Math.round(mi))+' mi', dir=dirWord(brg); if(cap) cap.textContent=dir+' · '+dist; dial.setAttribute('aria-label','Compass: the Golden Gate is '+dir+', '+dist+' away'); if(live && hd!=null) setNeedle(bearing(o,GATE)-hd); else if(!live) setNeedle(brg); }
+  function onOrient(e){ let raw=(e.webkitCompassHeading!=null)?e.webkitCompassHeading:(e.alpha!=null?(360-e.alpha):null); if(raw==null) return; if(!live){ live=true; if(nMark) nMark.style.opacity='0'; } hd=(hd==null)?raw:(((hd+angDelta(hd,raw)*0.18)%360)+360)%360; setNeedle(bearing(origin(),GATE)-hd); }
+  function disarm(){ window.removeEventListener('pointerup',enableMotion); window.removeEventListener('click',enableMotion); }
+  function enableMotion(){
+    if(asked || _reduceMo){ disarm(); return; }
     const DOE=window.DeviceOrientationEvent;
-    if(_reduceMo || !DOE){ staticDial(); return; }
-    if(typeof DOE.requestPermission==='function'){ DOE.requestPermission().then(st=>{ if(!open) return; st==='granted'?startLive():staticDial(); }).catch(()=>{ if(open) staticDial(); }); }
-    else { startLive(); }
+    if(!DOE){ disarm(); return; }
+    asked=true; disarm();
+    if(typeof DOE.requestPermission==='function'){ DOE.requestPermission().then(st=>{ if(st==='granted') window.addEventListener('deviceorientation',onOrient,true); }).catch(()=>{}); }
+    else { window.addEventListener('deviceorientation',onOrient,true); }
   }
-  function hide(){ open=false; dial.classList.remove('show'); txt.textContent='Find the Gate'; btn.setAttribute('aria-expanded','false'); if(liveTimer){ clearTimeout(liveTimer); liveTimer=null; } if(handler){ window.removeEventListener('deviceorientation',handler,true); handler=null; } live=false; hd=null; }
-  window._gateRefresh=function(){ if(open) refresh(); };
-  btn.addEventListener('click',()=>{ open?hide():show(); });
+  if(nMark) nMark.style.opacity='1';
+  refresh();
+  window._gateRefresh=refresh;
+  // iOS only grants motion access from a user gesture; arm on the first touch/click (steadier than pointerdown)
+  window.addEventListener('pointerup',enableMotion);
+  window.addEventListener('click',enableMotion);
 })();
 </script>
 </body>
