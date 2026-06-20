@@ -210,18 +210,21 @@
 
   .group{margin-bottom:18px;}
   .group h3{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--glow);margin-bottom:8px;}
-  .todo{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--hair);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;cursor:pointer;}
+  .todo{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--hair);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;cursor:pointer;position:relative;}
   .todo input{
     appearance:none;-webkit-appearance:none;width:24px;height:24px;flex:0 0 24px;
     border:2px solid var(--fog);border-radius:7px;cursor:pointer;position:relative;background:var(--night);
   }
   .todo input:checked{background:var(--bridge);border-color:var(--bridge);animation:punch .22s ease;}
   @keyframes punch{0%{transform:scale(1);}40%{transform:scale(.78);}100%{transform:scale(1);}}
+  .todo.ring::before{content:"";position:absolute;left:14px;top:12px;width:24px;height:24px;border-radius:8px;border:2px solid var(--brass);pointer-events:none;animation:detent .44s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes detent{from{opacity:.8;transform:scale(1);}to{opacity:0;transform:scale(2.3);}}
   .todo input:checked::after{content:"✓";position:absolute;inset:0;color:#fff;font:700 16px/20px sans-serif;text-align:center;}
   .todo input:focus-visible{outline:3px solid var(--glow);outline-offset:2px;}
   .todo span{font-size:14px;color:var(--fog);}
   .todo input:checked ~ span{color:var(--soft);text-decoration:line-through;}
   .savenote{font-size:11.5px;color:var(--soft);margin-top:4px;}
+  .donenote{font-family:"Marcellus", Georgia, serif;font-size:14px;color:var(--brass);margin-top:8px;}
 
   footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--soft);text-align:center;}
 
@@ -238,17 +241,34 @@
   #sky{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-top) 44%,var(--sky-mid) 78%,var(--sky-horizon) 100%);}
   #sunglow{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:160%;height:48%;background:radial-gradient(50% 82% at 50% 100%, var(--sky-horizon) 0%, transparent 70%);opacity:.85;}
   #bridge{position:absolute;left:0;bottom:0;width:100%;height:auto;display:block;}
-  #stars{position:absolute;left:0;right:0;top:0;height:42%;opacity:0;transition:opacity 2.5s ease;}
-  body[data-night] #stars{opacity:1;}
-  #stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#E8ECEB;box-shadow:0 0 3px rgba(232,236,235,.8);}
+  .hstars{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 2s ease;}
+  body[data-night] .hstars{opacity:1;}
   /* Golden Hour overdrive */
   @supports (animation-timeline: view()){
     .line .stop{animation:stopIn linear both;animation-timeline:view();animation-range:entry 0% entry 36%;}
   }
   @keyframes stopIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
-  ::view-transition-old(root),::view-transition-new(root){animation-duration:.42s;animation-timing-function:cubic-bezier(.22,1,.36,1);}
+  ::view-transition-group(root){animation-duration:.36s;}
+  body[data-dir="fwd"]::view-transition-old(root){animation:vtOutL .3s cubic-bezier(.4,0,.2,1) both;}
+  body[data-dir="fwd"]::view-transition-new(root){animation:vtInR .38s cubic-bezier(.16,1,.3,1) both;}
+  body[data-dir="back"]::view-transition-old(root){animation:vtOutR .3s cubic-bezier(.4,0,.2,1) both;}
+  body[data-dir="back"]::view-transition-new(root){animation:vtInL .38s cubic-bezier(.16,1,.3,1) both;}
+  @keyframes vtOutL{to{opacity:0;transform:translateX(-6%);}}
+  @keyframes vtOutR{to{opacity:0;transform:translateX(6%);}}
+  @keyframes vtInR{from{opacity:0;transform:translateX(7%);}to{opacity:1;transform:none;}}
+  @keyframes vtInL{from{opacity:0;transform:translateX(-7%);}to{opacity:1;transform:none;}}
   .chip.sunsetwarm{border-color:var(--glow);box-shadow:0 0 16px -6px rgba(242,132,92,.55);}
   .chip.sunsetwarm .cv{color:#E0552F;}
+  .gatebtn{display:inline-flex;align-items:center;gap:7px;margin-top:11px;padding:7px 14px;min-height:40px;border:1.5px solid var(--brass);background:transparent;color:var(--brass);border-radius:999px;font:600 12.5px/1 -apple-system,sans-serif;letter-spacing:.02em;cursor:pointer;position:relative;z-index:2;}
+  .gatebtn svg{width:15px;height:15px;display:block;}
+  .gatebtn:active{background:var(--brass);color:var(--night);}
+  .gatebtn:focus-visible{outline:3px solid var(--glow);outline-offset:2px;}
+  .gatedial{position:absolute;top:calc(env(safe-area-inset-top,0px) + 44px);right:14px;z-index:3;width:92px;pointer-events:none;text-align:center;opacity:0;transform:scale(.9);transition:opacity .25s ease,transform .25s cubic-bezier(.22,1,.36,1);}
+  .gatedial.show{opacity:1;transform:none;}
+  .gatedial svg{width:92px;height:92px;display:block;overflow:visible;}
+  #gateneedle{transform-box:view-box;transform-origin:60px 62px;transition:transform .12s linear;}
+  .gatecap{margin-top:5px;font:600 10.5px/1.3 ui-monospace,Menlo,monospace;color:var(--brass);letter-spacing:.02em;text-shadow:0 1px 6px rgba(0,0,0,.6);}
+  .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0;}
   @media (prefers-reduced-motion: reduce){
     :root{transition:none;}
     .line .stop{animation:none !important;opacity:1 !important;transform:none !important;}
@@ -256,6 +276,8 @@
     body::before{animation:none;}
     #nowblock .stop.major .card{animation:none;}
     .todo input:checked{animation:none;}
+    .todo.ring::before{display:none;}
+    .gatedial,#gateneedle,.hstars{transition:none;}
   }
 </style>
 </head>
@@ -270,13 +292,13 @@
     <g fill="#070B10"><rect x="93" y="24" width="6" height="98"/><rect x="105" y="24" width="6" height="98"/><rect x="91" y="38" width="22" height="5"/><rect x="91" y="60" width="22" height="5"/><rect x="283" y="24" width="6" height="98"/><rect x="295" y="24" width="6" height="98"/><rect x="281" y="38" width="22" height="5"/><rect x="281" y="60" width="22" height="5"/></g>
     <g stroke="#070B10" stroke-width="1.4"><line x1="55" y1="80" x2="55" y2="122"/><line x1="130" y1="60" x2="130" y2="122"/><line x1="160" y1="78" x2="160" y2="122"/><line x1="195" y1="88" x2="195" y2="122"/><line x1="230" y1="78" x2="230" y2="122"/><line x1="260" y1="60" x2="260" y2="122"/><line x1="335" y1="80" x2="335" y2="122"/></g>
   </svg>
-  <div id="stars" aria-hidden="true"><i style="left:12%;top:9%"></i><i style="left:22%;top:18%"></i><i style="left:34%;top:7%"></i><i style="left:46%;top:15%"></i><i style="left:58%;top:6%"></i><i style="left:67%;top:19%"></i><i style="left:78%;top:11%"></i><i style="left:88%;top:17%"></i><i style="left:17%;top:28%"></i><i style="left:41%;top:26%"></i><i style="left:72%;top:30%"></i><i style="left:90%;top:27%"></i></div>
 </div>
 <div class="wrap">
 
   <header>
     <div class="hscene" aria-hidden="true">
       <div class="hsky"></div>
+      <canvas id="starcanvas" class="hstars" aria-hidden="true"></canvas>
       <div class="hglow"></div>
       <svg class="hbridge" viewBox="0 0 390 150" preserveAspectRatio="xMidYMax meet">
         <rect x="0" y="120" width="390" height="30" fill="#0A0E12"/>
@@ -292,6 +314,17 @@
     <div class="eyebrow">San Francisco · July 17–19, 2026</div>
     <h1>SFO</h1>
     <div class="sub" id="hood">San Francisco</div>
+    <button id="gatebtn" class="gatebtn" type="button" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><polygon points="12,5 14.2,13 12,11 9.8,13" fill="currentColor"/></svg><span id="gatetxt">Find the Gate</span></button>
+    <p id="gatelive" class="sr-only" aria-live="polite"></p>
+    <div id="gatedial" class="gatedial" aria-hidden="true">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" fill="rgba(12,18,24,.5)" stroke="var(--brass)" stroke-width="1.5"/>
+        <g stroke="var(--brass)" stroke-width="1" opacity=".45"><line x1="60" y1="10" x2="60" y2="18"/><line x1="60" y1="102" x2="60" y2="110"/><line x1="10" y1="60" x2="18" y2="60"/><line x1="102" y1="60" x2="110" y2="60"/></g>
+        <text id="gateN" x="60" y="30" text-anchor="middle" fill="var(--soft)" font-size="11" font-family="ui-monospace,Menlo,monospace" style="opacity:0">N</text>
+        <g id="gateneedle"><polygon points="60,18 66,62 60,55 54,62" fill="var(--bridge)"/><polygon points="60,102 64,62 60,69 56,62" fill="var(--soft)" opacity=".45"/><circle cx="60" cy="62" r="3.5" fill="var(--brass)"/></g>
+      </svg>
+      <div id="gatecap" class="gatecap"></div>
+    </div>
   </header>
 
   <section class="panel on" id="p-now" role="tabpanel" aria-labelledby="t-now">
@@ -312,7 +345,7 @@
         <div class="field"><label for="k-hotel">Fairmont confirmation #</label><input id="k-hotel" data-k="hotel" autocomplete="off" placeholder="confirmation number"></div>
         <div class="field"><label for="k-dinner">Friday dinner (booked where / time / conf)</label><input id="k-dinner" data-k="dinner" autocomplete="off" placeholder="e.g. Niku 6:00 — counter for 1"></div>
         <div class="field"><label for="k-notes">Anything else</label><input id="k-notes" data-k="notes" autocomplete="off" placeholder="notes"></div>
-        <p class="savenote">Edits save automatically when this runs inside Claude.</p>
+        <p class="savenote">Edits save as you go.</p>
         <button class="pcbtn" id="pcbtn" type="button">Make a sunset postcard</button>
       </div>
     </details>
@@ -440,12 +473,12 @@
 
   <section class="panel" id="p-pack" role="tabpanel" aria-labelledby="t-pack">
     <div id="pack"></div>
-    <p class="savenote">Checkmarks save automatically when this runs inside Claude.</p>
+    <p class="savenote">Checks save as you go.</p>
   </section>
 
   <section class="panel" id="p-todo" role="tabpanel" aria-labelledby="t-todo">
     <div id="todos"></div>
-    <p class="savenote" id="savenote">Checkmarks save automatically when this runs inside Claude.</p>
+    <p class="savenote" id="savenote">Checks save as you go.</p>
   </section>
 
   <footer>SFO · v5 midnight — fog, brass, and bridge light</footer>
@@ -493,6 +526,7 @@ function updateSky(){
     const fog=(_wx===45||_wx===48), cloud=(_wx===2||_wx===3);
     document.querySelectorAll('.hveil').forEach(v=>{v.style.opacity = fog?'1':(cloud?'.4':'0');});
     const skyEl=document.getElementById('sky'); if(skyEl) skyEl.style.filter = fog?'saturate(.6) brightness(.9)':'';
+    try{ if(window._starSync) window._starSync(); }catch(_){}
     _skySet=true;
   }catch(e){}
 }
@@ -738,7 +772,9 @@ async function fetchWx(){
       " · wind " + Math.round(sf.wind_speed_10m) + " mph";
     el.hidden = false;
     lastWx = Date.now();
-  }catch(e){ /* offline — strip stays hidden */ }
+  }catch(e){
+    try{ const el=document.getElementById("wx"); if(el && el.hidden){ el.textContent="The fog ate the forecast. It's 64 and grey, it's always 64 and grey."; el.hidden=false; } }catch(_){}
+  }
 }
 
 let todoState = {};
@@ -747,7 +783,7 @@ let packState = {};
 PACK.forEach(g => g.items.forEach(i => packState[i.id] = false));
 let kinfo = {aa:"", hotel:"", dinner:"", notes:""};
 
-function paintChecklist(hostId, groups, st, save){
+function paintChecklist(hostId, groups, st, save, doneMsg){
   const host = document.getElementById(hostId);
   host.innerHTML = groups.map(g =>
     '<div class="group"><h3>' + g.g + '</h3>' +
@@ -755,10 +791,23 @@ function paintChecklist(hostId, groups, st, save){
       '<label class="todo"><input type="checkbox" data-id="' + i.id + '"' +
       (st[i.id] ? " checked" : "") + '><span>' + i.t + '</span></label>'
     ).join("") + '</div>'
-  ).join("");
+  ).join("") + '<p class="donenote" hidden></p>';
+  const note = host.querySelector(".donenote");
+  function refreshDone(){
+    const all = groups.every(g => g.items.every(i => st[i.id]));
+    if (all && doneMsg){ note.textContent = doneMsg; note.hidden = false; } else { note.hidden = true; }
+  }
   host.querySelectorAll("input").forEach(cb => {
-    cb.addEventListener("change", () => { st[cb.dataset.id] = cb.checked; save(); });
+    cb.addEventListener("change", () => {
+      st[cb.dataset.id] = cb.checked; save(); refreshDone();
+      if (cb.checked){
+        const lab = cb.closest(".todo");
+        if (lab && !_reduceMo){ lab.classList.remove("ring"); void lab.offsetWidth; lab.classList.add("ring"); setTimeout(() => lab.classList.remove("ring"), 480); }
+        if (navigator.vibrate){ try{ navigator.vibrate(11); }catch(_){} }
+      }
+    });
   });
+  refreshDone();
 }
 
 async function loadState(){
@@ -771,11 +820,11 @@ async function loadState(){
     if (k && k.value) kinfo = Object.assign(kinfo, JSON.parse(k.value));
   }catch(e){
     document.querySelectorAll(".savenote").forEach(el => {
-      el.textContent = "Edits last for this session here; they save automatically inside Claude.";
+      el.textContent = "Your changes stay while this tab is open.";
     });
   }
-  paintChecklist("todos", TODOS, todoState, saveTodos);
-  paintChecklist("pack", PACK, packState, savePack);
+  paintChecklist("todos", TODOS, todoState, saveTodos, "Nothing left but the going.");
+  paintChecklist("pack", PACK, packState, savePack, "All packed. The jacket's the whole game.");
   document.querySelectorAll("[data-k]").forEach(inp => { inp.value = kinfo[inp.dataset.k] || ""; });
 }
 async function saveTodos(){ try{ await window.storage.set("sfo-trip-todos", JSON.stringify(todoState)); }catch(e){} }
@@ -795,6 +844,9 @@ loadState();
 const tabs = Array.from(document.querySelectorAll(".tab"));
 document.body.dataset.tab = "now";
 function selectTab(t, moveFocus){
+  const newIndex = tabs.indexOf(t), oldIndex = tabs.findIndex(x => x.dataset.p === document.body.dataset.tab);
+  if (newIndex === oldIndex){ if (moveFocus) t.focus(); return; }
+  document.body.dataset.dir = (newIndex >= oldIndex) ? "fwd" : "back";
   const apply = () => {
     tabs.forEach(x => {
       const sel = x === t;
@@ -899,7 +951,7 @@ function initGeo(){
   if(!navigator.geolocation) return;
   navigator.geolocation.getCurrentPosition(p=>{
     _here=[p.coords.latitude,p.coords.longitude];
-    try{ renderNow(); ["fri","sat","sun"].forEach(renderDay); }catch(e){}
+    try{ renderNow(); ["fri","sat","sun"].forEach(renderDay); if(window._gateRefresh) window._gateRefresh(); }catch(e){}
   }, ()=>{}, {enableHighAccuracy:false,timeout:9000,maximumAge:600000});
 }
 initGeo();
@@ -958,6 +1010,75 @@ function makePostcard(){
   }catch(e){}
 }
 (function(){ const b=document.getElementById('pcbtn'); if(b) b.addEventListener('click',makePostcard); })();
+
+/* ---- O4: tonight's actual sky over San Francisco ---- */
+(function(){
+  const cv=document.getElementById('starcanvas'); if(!cv||!cv.getContext) return;
+  const ctx=cv.getContext('2d'); if(!ctx) return;
+  const LAT=37.77, LON=-122.42, RAD=Math.PI/180, sinLat=Math.sin(LAT*RAD), cosLat=Math.cos(LAT*RAD);
+  // bright stars: [RA hours, Dec deg, magnitude]
+  const STARS=[[6.752,-16.72,-1.46],[14.261,19.18,-0.05],[18.615,38.78,0.03],[5.278,45.998,0.08],[5.242,-8.20,0.13],[7.655,5.225,0.34],[5.919,7.407,0.50],[19.846,8.868,0.76],[4.599,16.509,0.85],[16.490,-26.43,1.09],[13.420,-11.16,1.04],[7.755,28.026,1.14],[22.961,-29.62,1.16],[20.690,45.28,1.25],[10.139,11.967,1.35],[7.577,31.888,1.58],[5.418,6.35,1.64],[5.438,28.61,1.65],[5.604,-1.20,1.69],[5.679,-1.94,1.74],[5.533,-0.30,2.25],[11.062,61.75,1.79],[11.031,56.38,2.37],[13.792,49.31,1.85],[13.399,54.93,2.23],[12.900,55.96,1.77],[11.897,53.69,2.44],[2.530,89.26,1.98],[14.845,74.16,2.08],[0.675,56.54,2.24],[0.153,59.15,2.28],[0.945,60.72,2.47],[3.405,49.86,1.79],[3.136,40.96,2.12],[0.140,29.09,2.06],[2.119,23.46,2.00],[19.512,27.96,3.05],[17.943,51.49,2.23],[17.582,12.56,2.08],[15.578,26.71,2.22],[11.818,14.57,2.11],[10.333,19.84,2.01],[1.162,35.62,2.05],[2.065,42.33,2.10],[23.079,15.21,2.49],[23.063,28.08,2.42],[21.736,9.875,2.40],[20.371,40.26,2.23],[20.770,33.97,2.46],[17.560,-37.10,1.62],[18.403,-34.38,1.85],[18.921,-26.30,2.05]];
+  let W=0,H=0,dpr=1,raf=0,running=false,last=0;
+  function size(){ dpr=Math.min(window.devicePixelRatio||1,2); W=cv.clientWidth||window.innerWidth; H=cv.clientHeight||1; cv.width=Math.max(1,Math.round(W*dpr)); cv.height=Math.max(1,Math.round(H*dpr)); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  function lst(){ const jd=Date.now()/86400000+2440587.5, d=jd-2451545.0; let g=280.46061837+360.98564736629*d+LON; return ((g%360)+360)%360; }
+  function draw(){
+    if(!W||!H) size();
+    ctx.clearRect(0,0,W,H);
+    const L=lst(), t=Date.now();
+    for(let i=0;i<STARS.length;i++){
+      const s=STARS[i], dec=s[1]*RAD, mag=s[2];
+      let ha=((L-s[0]*15)%360+360)%360; const har=ha*RAD;
+      const sinAlt=Math.sin(dec)*sinLat+Math.cos(dec)*cosLat*Math.cos(har);
+      const alt=Math.asin(Math.max(-1,Math.min(1,sinAlt)))/RAD;
+      if(alt<3) continue;
+      const cosAlt=Math.cos(alt*RAD); if(cosAlt<1e-4) continue;
+      let A=Math.acos(Math.max(-1,Math.min(1,(Math.sin(dec)-sinAlt*sinLat)/(cosAlt*cosLat))))/RAD;
+      const az=Math.sin(har)>0?360-A:A;
+      const x=az/360*W, y=(1-alt/90)*H;
+      const tw=0.72+0.28*Math.sin(t*0.0011*(0.6+(i%7)*0.12)+i*1.7);
+      const a=Math.max(0.22,Math.min(1,1.08-0.2*mag))*tw, r=Math.max(0.5,Math.min(2.8,2.4-0.55*mag));
+      ctx.globalAlpha=a; ctx.fillStyle=mag<0.7?'#F4ECD6':'#E8ECEB';
+      ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+      if(mag<0.9){ ctx.globalAlpha=a*0.22; ctx.beginPath(); ctx.arc(x,y,r*2.7,0,7); ctx.fill(); }
+    }
+    ctx.globalAlpha=1;
+  }
+  function loop(ts){ if(!running) return; if(ts-last>=33){ last=ts; draw(); } raf=requestAnimationFrame(loop); }
+  function start(){ if(running) return; running=true; size(); draw(); if(_reduceMo){ running=false; return; } last=0; raf=requestAnimationFrame(loop); }
+  function stop(){ running=false; if(raf) cancelAnimationFrame(raf); raf=0; }
+  function sync(){ if(document.body.hasAttribute('data-night')){ start(); } else { stop(); } }
+  window._starSync=sync;
+  window.addEventListener('resize',()=>{ if(running){ size(); } else if(document.body.hasAttribute('data-night')){ size(); draw(); } },{passive:true});
+  sync();
+})();
+
+/* ---- O2: true the gate (a brass compass to the real Golden Gate) ---- */
+(function(){
+  const btn=document.getElementById('gatebtn'); if(!btn) return;
+  const dial=document.getElementById('gatedial'), needle=document.getElementById('gateneedle'),
+        cap=document.getElementById('gatecap'), nMark=document.getElementById('gateN'), txt=document.getElementById('gatetxt'), lv=document.getElementById('gatelive');
+  const GATE=[37.8199,-122.4783], RAD=Math.PI/180;
+  let open=false, live=false, handler=null, hd=null, gotEvent=false, liveTimer=null;
+  function bearing(a,b){ const la1=a[0]*RAD,la2=b[0]*RAD,dLo=(b[1]-a[1])*RAD; const y=Math.sin(dLo)*Math.cos(la2), x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dLo); return ((Math.atan2(y,x)/RAD)+360)%360; }
+  function dirWord(d){ return ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(d/22.5)%16]; }
+  function origin(){ return _here || [37.792,-122.41]; }
+  function setNeedle(deg){ if(needle) needle.style.transform='rotate('+deg.toFixed(1)+'deg)'; }
+  function angDelta(a,b){ return ((b-a+540)%360)-180; }
+  function refresh(){ const o=origin(), brg=bearing(o,GATE), mi=_hav(o,GATE); const s='Golden Gate · '+dirWord(brg)+' · '+(mi<10?mi.toFixed(1):Math.round(mi))+' mi'; if(cap) cap.textContent=s; if(lv) lv.textContent=s; if(!live) setNeedle(brg); }
+  function onOrient(e){ let raw=(e.webkitCompassHeading!=null)?e.webkitCompassHeading:(e.alpha!=null?(360-e.alpha):null); if(raw==null) return; gotEvent=true; if(!live){ live=true; if(nMark) nMark.style.opacity='0'; } hd=(hd==null)?raw:(((hd+angDelta(hd,raw)*0.18)%360)+360)%360; setNeedle(bearing(origin(),GATE)-hd); }
+  function startLive(){ if(!open) return; live=true; gotEvent=false; if(nMark) nMark.style.opacity='0'; handler=onOrient; window.addEventListener('deviceorientation',handler,true); if(liveTimer) clearTimeout(liveTimer); liveTimer=setTimeout(()=>{ if(open && !gotEvent) staticDial(); }, 1500); }
+  function staticDial(){ live=false; if(nMark) nMark.style.opacity='1'; setNeedle(bearing(origin(),GATE)); }
+  function show(){
+    open=true; dial.classList.add('show'); txt.textContent='Hide compass'; btn.setAttribute('aria-expanded','true'); refresh();
+    const DOE=window.DeviceOrientationEvent;
+    if(_reduceMo || !DOE){ staticDial(); return; }
+    if(typeof DOE.requestPermission==='function'){ DOE.requestPermission().then(st=>{ if(!open) return; st==='granted'?startLive():staticDial(); }).catch(()=>{ if(open) staticDial(); }); }
+    else { startLive(); }
+  }
+  function hide(){ open=false; dial.classList.remove('show'); txt.textContent='Find the Gate'; btn.setAttribute('aria-expanded','false'); if(liveTimer){ clearTimeout(liveTimer); liveTimer=null; } if(handler){ window.removeEventListener('deviceorientation',handler,true); handler=null; } live=false; hd=null; }
+  window._gateRefresh=function(){ if(open) refresh(); };
+  btn.addEventListener('click',()=>{ open?hide():show(); });
+})();
 </script>
 </body>
 </html>
