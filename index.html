@@ -306,9 +306,9 @@
       <div class="hveil"></div>
     </div>
     <div id="scrublab" aria-hidden="true"></div>
-    <div class="eyebrow">San Francisco · July 17–19, 2026</div>
+    <div class="eyebrow">July 17–19, 2026</div>
     <h1>SFO</h1>
-    <div class="sub" id="hood">San Francisco</div>
+    <div class="sub" id="hood"></div>
     <div id="gatedial" class="gatedial" role="img" aria-label="Compass to the Golden Gate">
       <svg viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" fill="rgba(12,18,24,.5)" stroke="var(--brass)" stroke-width="1.5"/>
@@ -942,7 +942,7 @@ function currentHood(now){
       const cur=sc[i-1]; if(cur && HOODS[cur.n]) return HOODS[cur.n];
     }
   }catch(e){}
-  return "San Francisco";
+  return "";
 }
 function _hav(a,b){const R=3958.8,r=x=>x*Math.PI/180;const dLa=r(b[0]-a[0]),dLo=r(b[1]-a[1]);const x=Math.sin(dLa/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
 function distStr(name){
